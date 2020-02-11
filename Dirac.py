@@ -1,13 +1,14 @@
 
 import numpy
+import math
 from operator import itemgetter
 
 #prints state as a vector in normal basis
 def PrettyPrintBinary(myState):
     new = sorted(myState, key = itemgetter(1)) #sort the basis vectors
     binary = '( '
-    for k, v in new: #adds each vector to the string
-        binary += str(k)+' |'+v+'> + '
+    for coefficient, basis in new: #adds each vector to the string
+        binary += str(coefficient)+' |'+basis+'> + '
     binary = binary[:-2] #take off final + sign
     binary += ')'
     print(binary)
@@ -17,9 +18,9 @@ def PrettyPrintBinary(myState):
 def PrettyPrintInteger(myState):
     new = sorted(myState, key = itemgetter(1)) #sort vectors
     integer = '( '
-    for k, v in new: #adding each vector to string
-        integer += str(k) + ' |'
-        binary = int(v, 2) #change vector to binary int
+    for coefficient, basis in new: #adding each vector to string
+        integer += str(coefficient) + ' |'
+        binary = int(basis, 2) #change vector to binary int
         integer += str(binary)
         integer += '> + '
     integer = integer[:-2] #take off final + sign
@@ -28,21 +29,23 @@ def PrettyPrintInteger(myState):
 
 #change the state into a vector representation
 def StateToVec(myState):
-    new = sorted(myState, key = itemgetter(1)) #sort vectors
-    myVec = []
-    length = len(new[0][1])
-    i = 0
-    while i <= 2**length:
-        for k, v in new:
-            if str(i) == v:
-                myVec.append(k)
-            else:
-                myVec.append(0.0)
-            i += 1
+    length = len(myState[0][1]) #length of vector array
+    myVec = [0.0]*(2**length)
+
+    for coefficient, basis in myState: #add given states into vector array
+        myVec[int(basis, 2)] = coefficient
+
     return myVec
 
 def VecToState(myState):
-    return 0
+    mySt = []
+    for coefficient in myState:
+        if coefficient != 0.0:
+            binary = str(bin(myState.index(coefficient)))
+            binary  = binary[2:]
+            bits = math.log(len(myState), 2)
+            mySt.append((coefficient, binary.zfill(int(bits))))
+    return mySt
 
 myState2 = [(numpy.sqrt(0.1)*1.j, '101'), (numpy.sqrt(0.5), '000'), (numpy.sqrt(0.4), '010')]
 
