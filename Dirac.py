@@ -11,7 +11,7 @@ def PrettyPrintBinary(myState):
         binary += str(coefficient)+' |'+basis+'> + '
     binary = binary[:-2] #take off final + sign
     binary += ')'
-    print(binary)
+    return binary
 
 #prints state as vector with integer representation for basis vectors. Examples are |00> = |0> and 
 #|10> = |2>
@@ -25,7 +25,7 @@ def PrettyPrintInteger(myState):
         integer += '> + '
     integer = integer[:-2] #take off final + sign
     integer += ')'
-    print(integer)
+    return integer
 
 #change the state into a vector representation
 def StateToVec(myState):
@@ -37,20 +37,23 @@ def StateToVec(myState):
 
     return myVec
 
+#change the vector into a state representation with a coefficient and binary state
 def VecToState(myState):
     mySt = []
     for coefficient in myState:
         if coefficient != 0.0:
-            binary = str(bin(myState.index(coefficient)))
+            binary = str(bin(myState.index(coefficient))) #binary of each coefficient
             binary  = binary[2:]
             bits = math.log(len(myState), 2)
-            mySt.append((coefficient, binary.zfill(int(bits))))
+            mySt.append((coefficient, binary.zfill(int(bits)))) #bring non-zero coefficents into state
     return mySt
 
 myState2 = [(numpy.sqrt(0.1)*1.j, '101'), (numpy.sqrt(0.5), '000'), (numpy.sqrt(0.4), '010')]
 
-PrettyPrintBinary(myState2)
-PrettyPrintInteger(myState2)
+f = open("Dirac.txt", "a")
+f.write(str(PrettyPrintBinary(myState2)))
+f.write(str(PrettyPrintInteger(myState2)))
 
-print(StateToVec(myState2))
-print(VecToState(StateToVec(myState2)))
+f.write(str(StateToVec(myState2)))
+f.write(str(VecToState(StateToVec(myState2))))
+f.close()
